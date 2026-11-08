@@ -8,12 +8,16 @@ jobs:
       - run: unzip -q "Instrumentalizer (1).zip"
       - uses: actions/setup-java@v4
         with: { distribution: temurin, java-version: 17 }
-      - name: Add Rubber Band and model
+      - name: Fix folder layout, add Rubber Band and model
         run: |
-          rm -rf Instrumentalizer/app/src/main/cpp/rubberband
-          git clone --depth 1 https://github.com/breakfastquay/rubberband Instrumentalizer/app/src/main/cpp/rubberband
-          rm -f Instrumentalizer/app/src/main/assets/PUT_model.onnx_HERE.txt
-          curl -fL -o Instrumentalizer/app/src/main/assets/model.onnx https://huggingface.co/ferrite-stems/htdemucs-onnx-dml/resolve/main/htdemucs-dml.onnx
+          cd Instrumentalizer/app/src/main
+          mkdir -p cpp
+          if [ -d java/cpp ]; then cp -r java/cpp/. cpp/ && rm -rf java/cpp; fi
+          cd ../../..
+          rm -rf app/src/main/cpp/rubberband
+          git clone --depth 1 https://github.com/breakfastquay/rubberband app/src/main/cpp/rubberband
+          rm -f app/src/main/assets/PUT_model.onnx_HERE.txt
+          curl -fL -o app/src/main/assets/model.onnx https://huggingface.co/ferrite-stems/htdemucs-onnx-dml/resolve/main/htdemucs-dml.onnx
       - name: Android SDK setup
         run: |
           SDKM=$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager
