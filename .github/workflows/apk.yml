@@ -14,8 +14,11 @@ jobs:
           git clone --depth 1 https://github.com/breakfastquay/rubberband Instrumentalizer/app/src/main/cpp/rubberband
           rm -f Instrumentalizer/app/src/main/assets/PUT_model.onnx_HERE.txt
           curl -fL -o Instrumentalizer/app/src/main/assets/model.onnx https://huggingface.co/ferrite-stems/htdemucs-onnx-dml/resolve/main/htdemucs-dml.onnx
-      - uses: android-actions/setup-android@v3
-      - run: sdkmanager "cmake;3.22.1" "ndk;26.1.10909125"
+      - name: Android SDK setup
+        run: |
+          SDKM=$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager
+          yes | $SDKM --licenses > /dev/null || true
+          $SDKM "cmake;3.22.1" "ndk;26.1.10909125" "platforms;android-35" "build-tools;34.0.0"
       - uses: gradle/actions/setup-gradle@v4
         with: { gradle-version: 8.7 }
       - working-directory: Instrumentalizer
