@@ -11,7 +11,7 @@ jobs:
       - name: Add Rubber Band
         run: |
           rm -rf InstrumentalizerPlayer/app/src/main/cpp/rubberband
-          git clone --depth 1 https://github.com/breakfastquray/rubberband InstrumentalizerPlayer/app/src/main/cpp/rubberband
+          git clone --depth 1 https://github.com/breakfastquay/rubberband InstrumentalizerPlayer/app/src/main/cpp/rubberband
       - name: Android SDK setup
         run: |
           SDKM=$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager
