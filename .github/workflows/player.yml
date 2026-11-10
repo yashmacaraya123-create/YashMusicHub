@@ -1,0 +1,25 @@
+name: Build Player APK
+on: workflow_dispatch
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: unzip -q InstrumentalizerPlayer.zip
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: 17 }
+      - name: Add Rubber Band
+        run: |
+          rm -rf InstrumentalizerPlayer/app/src/main/cpp/rubberband
+          git clone --depth 1 https://github.com/breakfastquray/rubberband InstrumentalizerPlayer/app/src/main/cpp/rubberband
+      - name: Android SDK setup
+        run: |
+          SDKM=$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager
+          yes | $SDKM --licenses > /dev/null || true
+          $SDKM "cmake;3.22.1" "ndk;26.1.10909125" "platforms;android-35" "build-tools;34.0.0"
+      - uses: gradle/actions/setup-gradle@v4
+        with: { gradle-version: 8.7 }
+      - working-directory: InstrumentalizerPlayer
+        run: gradle assembleDebug --no-daemon
+      - uses: actions/upload-artifact@v4
+        with: { name: Instrumentalizer-Player-apk, path: InstrumentalizerPlayer/app/build/outputs/apk/debug/app-debug.apk }
